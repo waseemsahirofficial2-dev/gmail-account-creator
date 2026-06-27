@@ -1,0 +1,33 @@
+name: Gmail Account Creator
+
+on:
+  workflow_dispatch:   # Allows manual run from browser
+
+jobs:
+  create-accounts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser xvfb
+
+      - name: Install Python packages
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Gmail Creator
+        run: |
+          xvfb-run -a python auto_gmail_creator.py --headless
+        env:
+          # You can add secrets here later if needed
+          FIVESIM_API_KEY: ${{ secrets.FIVESIM_API_KEY }}
